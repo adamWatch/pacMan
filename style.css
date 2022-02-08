@@ -16,10 +16,10 @@
 	box-sizing: border-box;
 }
 .wall {
-	background-color: blue;
+	background-color: purple;
 }
 
 .power-pellet {
-	background-color: yellow;
+	background-color: goldenrod;
 	border-radius: 10px;
 }
