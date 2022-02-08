@@ -67,4 +67,54 @@ document.addEventListener("DOMContentLoaded", () => {
 	}
 
 	createBoard();
+
+	//starting position of pac-man
+	let pacmanCurrentIndex = 490;
+
+	squares[pacmanCurrentIndex].classList.add("pac-man");
+
+	//move pac-man
+
+	function movePacman(e) {
+		squares[pacmanCurrentIndex].classList.remove("pac-man");
+
+		switch (e.keyCode) {
+			case 37:
+				if (
+					pacmanCurrentIndex % width !== 0 &&
+					!squares[pacmanCurrentIndex - 1].classList.contains("wall") &&
+					!squares[pacmanCurrentIndex - 1].classList.contains("ghost-lair")
+				)
+					pacmanCurrentIndex -= 1;
+				break;
+			case 38:
+				if (
+					pacmanCurrentIndex % width >= 0 &&
+					!squares[pacmanCurrentIndex - width].classList.contains("wall") &&
+					!squares[pacmanCurrentIndex - width].classList.contains("ghost-lair")
+				)
+					pacmanCurrentIndex -= width;
+				break;
+			case 39:
+				if (
+					pacmanCurrentIndex % width !== 0 &&
+					!squares[pacmanCurrentIndex + 1].classList.contains("wall") &&
+					!squares[pacmanCurrentIndex + 1].classList.contains("ghost-lair")
+				)
+					pacmanCurrentIndex += 1;
+				break;
+			case 40:
+				if (
+					pacmanCurrentIndex % width >= 0 &&
+					!squares[pacmanCurrentIndex + width].classList.contains("wall") &&
+					!squares[pacmanCurrentIndex + width].classList.contains("ghost-lair")
+				)
+					pacmanCurrentIndex += width;
+				break;
+		}
+
+		squares[pacmanCurrentIndex].classList.add("pac-man");
+	}
+
+	document.addEventListener("keyup", movePacman);
 });
