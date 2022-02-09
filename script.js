@@ -2,6 +2,7 @@ document.addEventListener("DOMContentLoaded", () => {
 	const grid = document.querySelector(".grid");
 	const scoreDisplay = document.getElementById("score");
 	const width = 28;
+	let score = 0;
 
 	const layout = [
 		1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
@@ -60,6 +61,8 @@ document.addEventListener("DOMContentLoaded", () => {
 				squares[i].classList.add("pac-dot");
 			} else if (layout[i] === 1) {
 				squares[i].classList.add("wall");
+			} else if (layout === 2) {
+				squares[i].classList.add("ghost-lair");
 			} else if (layout[i] === 3) {
 				squares[i].classList.add("power-pellet");
 			}
@@ -86,7 +89,14 @@ document.addEventListener("DOMContentLoaded", () => {
 					!squares[pacmanCurrentIndex - 1].classList.contains("ghost-lair")
 				)
 					pacmanCurrentIndex -= 1;
+
+				//check if pacman is in the left exit
+				if (pacmanCurrentIndex - 1 === 363) {
+					pacmanCurrentIndex = 391;
+				}
+
 				break;
+
 			case 38:
 				if (
 					pacmanCurrentIndex % width >= 0 &&
@@ -102,6 +112,13 @@ document.addEventListener("DOMContentLoaded", () => {
 					!squares[pacmanCurrentIndex + 1].classList.contains("ghost-lair")
 				)
 					pacmanCurrentIndex += 1;
+
+				//check if pacman is in the right exit
+				if (pacmanCurrentIndex + 1 === 392) {
+					squares[pacmanCurrentIndex].classList.add("pac-man");
+					pacmanCurrentIndex = 364;
+					squares[391].classList.remove("pac-man");
+				}
 				break;
 			case 40:
 				if (
@@ -114,7 +131,16 @@ document.addEventListener("DOMContentLoaded", () => {
 		}
 
 		squares[pacmanCurrentIndex].classList.add("pac-man");
+		pacDotEaten();
 	}
 
 	document.addEventListener("keyup", movePacman);
+
+	function pacDotEaten() {
+		if (squares[pacmanCurrentIndex].classList.contains("pac-dot")) {
+			score++;
+			scoreDisplay.innerHTML = score;
+			squares[pacmanCurrentIndex].classList.remove("pac-dot");
+		}
+	}
 });
