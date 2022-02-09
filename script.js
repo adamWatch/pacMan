@@ -131,10 +131,11 @@ document.addEventListener("DOMContentLoaded", () => {
 		}
 
 		squares[pacmanCurrentIndex].classList.add("pac-man");
+
 		pacDotEaten();
 		powerPelletEaten();
 		checkForGameOver();
-		//checkForWin();
+		checkForWin();
 	}
 
 	document.addEventListener("keyup", movePacman);
@@ -249,6 +250,14 @@ document.addEventListener("DOMContentLoaded", () => {
 			// 	alert("Game Over");
 			// }, 500);
 			scoreDisplay.innerHTML = "Gamer Over";
+		}
+	}
+
+	function checkForWin() {
+		if (score > 274) {
+			ghosts.forEach((ghost) => clearInterval(ghost.timerId));
+			document.removeEventListener("keyup", movePacman);
+			scoreDisplay.innerHTML = "You Won!";
 		}
 	}
 });
