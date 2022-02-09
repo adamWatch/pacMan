@@ -132,6 +132,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
 		squares[pacmanCurrentIndex].classList.add("pac-man");
 		pacDotEaten();
+		powerPelletEaten();
+		checkForGameOver();
+		//checkForWin();
 	}
 
 	document.addEventListener("keyup", movePacman);
@@ -144,6 +147,21 @@ document.addEventListener("DOMContentLoaded", () => {
 		}
 	}
 
+	// powerPelletEaten implementation
+	function powerPelletEaten() {
+		if (squares[pacmanCurrentIndex].classList.contains("power-pellet")) {
+			score += 10;
+			ghosts.forEach((ghost) => (ghost.isScared = true));
+			setTimeout(unScaredGhosts, 10000);
+			squares[pacmanCurrentIndex].classList.remove("power-pellet");
+		}
+	}
+
+	//make the ghost stop appearing as greenolive
+	function unScaredGhosts() {
+		ghosts.forEach((ghost) => (ghost.isScared = false));
+	}
+
 	//create Ghost
 
 	class Ghost {
@@ -153,6 +171,7 @@ document.addEventListener("DOMContentLoaded", () => {
 			this.speed = speed;
 			this.currentIndex = startIndex;
 			this.timerId = NaN;
+			this.isScared = false;
 		}
 	}
 
@@ -188,7 +207,7 @@ document.addEventListener("DOMContentLoaded", () => {
 				squares[ghost.currentIndex].classList.remove(
 					ghost.className,
 					"ghost",
-					"scare-ghost"
+					"scared-ghost"
 				);
 				//change the currentIndex to the new safe square
 				ghost.currentIndex += direction;
@@ -196,6 +215,40 @@ document.addEventListener("DOMContentLoaded", () => {
 				squares[ghost.currentIndex].classList.add(ghost.className, "ghost");
 				//else find anew direction to try
 			} else direction = directions[Math.floor(Math.random() * directions.length)];
+
+			if (ghost.isScared) {
+				squares[ghost.currentIndex].classList.add("scared-ghost");
+			}
+			//if ghost scared
+			if (
+				ghost.isScared &&
+				squares[ghost.currentIndex].classList.contains("pac-man")
+			) {
+				squares[ghost.currentIndex].classList.remove(
+					ghost.className,
+					"ghost",
+					"scared-ghost"
+				);
+				ghost.currentIndex = ghost.startIndex;
+				score += 100;
+				squares[ghost.currentIndex].classList.add(ghost.className, "ghost");
+			}
+			checkForGameOver();
 		}, ghost.speed);
+	}
+
+	//check for a game over
+	function checkForGameOver() {
+		if (
+			squares[pacmanCurrentIndex].classList.contains("ghost") &&
+			!squares[pacmanCurrentIndex].classList.contains("scared-ghost")
+		) {
+			ghosts.forEach((ghost) => clearInterval(ghost.timerId));
+			document.removeEventListener("keyup", movePacman);
+			// setTimeout(function () {
+			// 	alert("Game Over");
+			// }, 500);
+			scoreDisplay.innerHTML = "Gamer Over";
+		}
 	}
 });
